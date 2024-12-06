@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SUSI - Pedido de Productos</title>
+  <style>
+    body {
+      font-family: 'Georgia', serif;
+      background-color: #fce4ec;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .form-container {
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 500px;
+      border: 2px solid #f06292;
+    }
+
+    .form-container h2 {
+      text-align: center;
+      font-family: 'Cursive', serif;
+      color: #ad1457;
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+
+    .form-container h2::after {
+      content: "✨";
+      display: block;
+      font-size: 20px;
+      text-align: center;
+      margin-top: 5px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #ad1457;
+    }
+
+    input[type="text"],
+    input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #f48fb1;
+      border-radius: 8px;
+      font-size: 16px;
+      box-sizing: border-box;
+      color: #333;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #ad1457;
+    }
+
+    .add-btn {
+      background-color: #f06292;
+      color: #ffffff;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+      font-size: 16px;
+    }
+
+    .add-btn:hover {
+      background-color: #d81b60;
+    }
+
+    .product-list {
+      margin-top: 20px;
+      border: 1px dashed #f8bbd0;
+      padding: 15px;
+      border-radius: 8px;
+      background-color: #fce4ec;
+    }
+
+    .product-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 16px;
+      color: #ad1457;
+    }
+
+    .product-item button {
+      background-color: #e91e63;
+      color: #ffffff;
+      border: none;
+      border-radius: 4px;
+      padding: 5px 10px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .product-item button:hover {
+      background-color: #c2185b;
+    }
+
+    .send-btn {
+      background-color: #8e24aa;
+      color: #ffffff;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 20px;
+      font-size: 16px;
+    }
+
+    .send-btn:hover {
+      background-color: #6a1b9a;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>SUSI - Pedido de Productos</h2>
+    <div class="form-group">
+      <label for="product-name">Nombre del producto</label>
+      <input type="text" id="product-name" placeholder="Ej: Perfume Lavanda">
+    </div>
+    <div class="form-group">
+      <label for="product-quantity">Cantidad</label>
+      <input type="number" id="product-quantity" placeholder="Ej: 3" min="1">
+    </div>
+    <button class="add-btn" onclick="addProduct()">Agregar Producto</button>
+
+    <div class="product-list" id="product-list"></div>
+
+    <button class="send-btn" onclick="sendOrder()">Enviar Pedido</button>
+  </div>
+
+  <script>
+    const productList = [];
+
+    function addProduct() {
+      const name = document.getElementById('product-name').value.trim();
+      const quantity = document.getElementById('product-quantity').value;
+
+      if (name === '' || quantity === '' || quantity <= 0) {
+        alert('Por favor, ingrese un nombre válido y una cantidad mayor a 0.');
+        return;
+      }
+
+      productList.push({ name, quantity });
+      updateProductList();
+      document.getElementById('product-name').value = '';
+      document.getElementById('product-quantity').value = '';
+    }
+
+    function updateProductList() {
+      const listElement = document.getElementById('product-list');
+      listElement.innerHTML = '';
+
+      productList.forEach((product, index) => {
+        const item = document.createElement('div');
+        item.className = 'product-item';
+        item.innerHTML = `
+          <span>${product.name} - ${product.quantity}</span>
+          <button onclick="removeProduct(${index})">Eliminar</button>
+        `;
+        listElement.appendChild(item);
+      });
+    }
+
+    function removeProduct(index) {
+      productList.splice(index, 1);
+      updateProductList();
+    }
+
+    function sendOrder() {
+      if (productList.length === 0) {
+        alert('No hay productos para enviar.');
+        return;
+      }
+
+      const orderDetails = productList
+        .map(product => `${product.name}: ${product.quantity}`)
+        .join('\n');
+      
+      const mailtoLink = `mailto:catalisanojuancatriel@hotmail.com?subject=Pedido%20de%20Productos%20SUSI&body=${encodeURIComponent(orderDetails)}`;
+      window.location.href = mailtoLink;
+    }
+  </script>
+</body>
+</html>
