@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Información</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        input[type="number"], input[type="date"] {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 4px;
+            margin-top: 10px;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        header .logo {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        /* Barra de navegación */
+        nav {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: white;
+            margin: 0 15px;
+            font-size: 1.2em;
+            padding: 8px 15px;
+            border-radius: 5px;
+        }
+
+        nav a:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<header>
+    <div class="logo">
+        Perfumería SUSI
+    </div>
+    <nav>
+        <a href="index.html">Pedidos</a>
+        <a href="contabilidad.html">Contabilidad</a>
+    </nav>
+</header>
+<body>
+
+<div class="container">
+    <h2>Formulario de Información</h2>
+    <!-- Formulario que llamará la función sendOrder -->
+    <form id="paymentForm" onsubmit="sendOrder(event)">
+        <table>
+            <tr>
+                <th>Fecha</th>
+                <th>Z ($)</th>
+                <th>Efectivo ($)</th>
+                <th>Lapos ($)</th>
+                <th>Transferencias ($)</th>
+                <th>Mp Susi ($)</th>
+                <th>Cuenta DNI ($)</th>
+                <th>Mp Kati ($)</th>
+                <th>Total ($)</th>
+            </tr>
+            <tr>
+                <td><input type="date" name="fecha" id="fecha" required></td>
+                <td><input type="number" name="z" id="z" required oninput="calcularTotal()"></td>
+                <td><input type="number" name="efectivo" id="efectivo" required oninput="calcularTotal()"></td>
+                <td><input type="number" name="lapos" id="lapos" required oninput="calcularTotal()"></td>
+                <td><input type="number" name="transferencias" id="transferencias" required oninput="calcularTotal()"></td>
+                <td><input type="number" name="mpSusi" id="mpSusi" required oninput="calcularTotal()"></td>
+                <td><input type="number" name="cuentaDni" id="cuentaDni" required oninput="calcularTotal()"></td>
+                <td><input type="number" name="mpKati" id="mpKati" required oninput="calcularTotal()"></td>
+                <td><input type="number" name="total" id="total" readonly></td>
+            </tr>
+        </table>
+        <button type="submit">Enviar Información</button>
+    </form>
+</div>
+
+<script>
+    // Función para calcular el total
+    function calcularTotal() {
+        const z = parseFloat(document.getElementById('z').value) || 0;
+        const efectivo = parseFloat(document.getElementById('efectivo').value) || 0;
+        const lapos = parseFloat(document.getElementById('lapos').value) || 0;
+        const transferencias = parseFloat(document.getElementById('transferencias').value) || 0;
+        const mpSusi = parseFloat(document.getElementById('mpSusi').value) || 0;
+        const cuentaDni = parseFloat(document.getElementById('cuentaDni').value) || 0;
+        const mpKati = parseFloat(document.getElementById('mpKati').value) || 0;
+
+        // Calcular el total (sin contar el valor de Z)
+        const total = efectivo + lapos + transferencias + mpSusi + cuentaDni + mpKati;
+
+        document.getElementById('total').value = total.toFixed(2);
+    }
+
+    // Función para enviar el formulario por mailto
+    function sendOrder(event) {
+        event.preventDefault();  // Prevenir el envío tradicional del formulario
+
+        // Obtener los datos del formulario
+        const fecha = document.getElementById('fecha').value;
+        const z = document.getElementById('z').value;
+        const efectivo = document.getElementById('efectivo').value;
+        const lapos = document.getElementById('lapos').value;
+        const transferencias = document.getElementById('transferencias').value;
+        const mpSusi = document.getElementById('mpSusi').value;
+        const cuentaDni = document.getElementById('cuentaDni').value;
+        const mpKati = document.getElementById('mpKati').value;
+        const total = document.getElementById('total').value;
+
+        // Crear el cuerpo del correo
+        const orderDetails = `
+            Fecha: ${fecha}
+            Z: $${z}
+            Efectivo: $${efectivo}
+            Lapos: $${lapos}
+            Transferencias: $${transferencias}
+            Mp Susi: $${mpSusi}
+            Cuenta DNI: $${cuentaDni}
+            Mp Kati: $${mpKati}
+            Total: $${total}
+        `;
+
+        // Crear el enlace mailto
+        const mailtoLink = `mailto:Sumi_2101@gmail.com?subject=Formulario%20de%20Información%20SUSI&body=${encodeURIComponent(orderDetails)}`;
+
+        // Redirigir al mailto
+        window.location.href = mailtoLink;
+    }
+</script>
+
+</body>
+</html>
