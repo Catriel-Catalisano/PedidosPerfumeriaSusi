@@ -153,8 +153,8 @@
             const cuenta_dni = parseFloat(document.getElementById('cuenta_dni').value) || 0;
             const mp_kati = parseFloat(document.getElementById('mp_kati').value) || 0;
 
-            // Calcular el total excluyendo Z
-            const total = efectivo + lapos + transferencias + mp_susi + cuenta_dni + mp_kati - z;
+            // Calcular el total sumando todo, pero sin incluir Z en la suma
+            const total = efectivo + lapos + transferencias + mp_susi + cuenta_dni + mp_kati;
             document.getElementById('total').value = total.toFixed(2);
 
             const fecha = document.getElementById('fecha').value;
@@ -171,7 +171,7 @@ Mp Kati: $${mp_kati}
 Total: $${total.toFixed(2)}
 `;
 
-            const mailtoLink = `mailto:catalisanojuancatriel@hotmail.com?subject=Contabilidad%20SUSI&body=${encodeURIComponent(contabilidadDetails)}`;
+            const mailtoLink = `mailto:tucorreo@empresa.com?subject=Contabilidad%20SUSI&body=${encodeURIComponent(contabilidadDetails)}`;
             window.location.href = mailtoLink;
         }
     </script>
