@@ -23,7 +23,6 @@
             margin: 0;
         }
 
-        /* Estilo para los formularios */
         form {
             background-color: #ffffff;
             margin: 20px;
@@ -50,7 +49,7 @@
             border-radius: 4px;
         }
 
-        input[type="submit"] {
+        input[type="submit"], button {
             background-color: #4CAF50;
             color: white;
             border: none;
@@ -59,7 +58,7 @@
             border-radius: 4px;
         }
 
-        input[type="submit"]:hover {
+        input[type="submit"]:hover, button:hover {
             background-color: #45a049;
         }
 
@@ -69,13 +68,32 @@
             gap: 20px;
         }
 
-        /* Hacer los formularios responsivos */
         @media (min-width: 600px) {
             .form-container {
                 flex-direction: row;
                 justify-content: space-between;
             }
         }
+
+        /* Estilo de la lista de productos */
+        .product-list {
+            margin-top: 20px;
+        }
+
+        .product-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .product-item input {
+            width: 45%;
+        }
+
+        .product-item button {
+            background-color: red;
+        }
+
     </style>
 </head>
 <body>
@@ -93,6 +111,10 @@
 
             <label for="cantidad">Cantidad:</label>
             <input type="number" id="cantidad" name="cantidad" required>
+
+            <button type="button" onclick="addProduct()">Agregar Producto</button>
+
+            <div class="product-list" id="productList"></div>
 
             <input type="submit" value="Enviar Pedido">
         </form>
@@ -132,18 +154,71 @@
     </div>
 
     <script>
-        // Enviar Pedido por correo
-        function sendPedido() {
+        // Lista de productos agregados
+        let productList = [];
+
+        // Agregar un producto a la lista
+        function addProduct() {
             const producto = document.getElementById('producto').value;
             const cantidad = document.getElementById('cantidad').value;
 
-            const orderDetails = `Producto: ${producto}\nCantidad: ${cantidad}`;
-            const mailtoLink = `mailto:tucorreo@empresa.com?subject=Pedido%20de%20Productos%20SUSI&body=${encodeURIComponent(orderDetails)}`;
+            if (producto && cantidad) {
+                productList.push({ name: producto, quantity: cantidad });
+
+                const productDiv = document.createElement('div');
+                productDiv.classList.add('product-item');
+                productDiv.innerHTML = `
+                    <span>${producto}: ${cantidad}</span>
+                    <button type="button" onclick="removeProduct(${productList.length - 1})">Eliminar</button>
+                `;
+                document.getElementById('productList').appendChild(productDiv);
+
+                // Limpiar los campos
+                document.getElementById('producto').value = '';
+                document.getElementById('cantidad').value = '';
+            } else {
+                alert("Por favor ingrese el nombre del producto y la cantidad.");
+            }
+        }
+
+        // Eliminar un producto de la lista
+        function removeProduct(index) {
+            productList.splice(index, 1);
+            updateProductList();
+        }
+
+        // Actualizar la lista de productos mostrada
+        function updateProductList() {
+            const productListDiv = document.getElementById('productList');
+            productListDiv.innerHTML = '';
+            productList.forEach((product, index) => {
+                const productDiv = document.createElement('div');
+                productDiv.classList.add('product-item');
+                productDiv.innerHTML = `
+                    <span>${product.name}: ${product.quantity}</span>
+                    <button type="button" onclick="removeProduct(${index})">Eliminar</button>
+                `;
+                productListDiv.appendChild(productDiv);
+            });
+        }
+
+        // Enviar Pedido por correo
+        function sendPedido() {
+            if (productList.length === 0) {
+                alert('No hay productos para enviar.');
+                return;
+            }
+
+            const orderDetails = productList
+                .map(product => `${product.name}: ${product.quantity}`)
+                .join('\n');
+
+            const mailtoLink = `mailto:catalisanojuancatriel@hotmail.com?subject=Pedido%20de%20Productos%20SUSI&body=${encodeURIComponent(orderDetails)}`;
 
             window.location.href = mailtoLink;
         }
 
-        // Calcular Total y Enviar Contabilidad por correo
+        // Enviar Contabilidad por correo
         function sendContabilidad() {
             const z = parseFloat(document.getElementById('z').value) || 0;
             const efectivo = parseFloat(document.getElementById('efectivo').value) || 0;
